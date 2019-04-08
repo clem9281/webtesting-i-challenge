@@ -5,17 +5,28 @@ module.exports = {
   get,
 };
 
+
+
+function fillInEmptyProps(item) {
+  if (!item.hasOwnProperty('name')) item.name = "No Name Provided";
+  if (!item.hasOwnProperty('durability')) item.durability = 100;
+  if (!item.hasOwnProperty('enhancement')) item.enhancement = 0;
+  return item;
+}
+
 function succeed(item) {
-  // if the enhancement isn't provided, set it to 1, else if it's equal to 20 don't change it, else increase it by one
-  return { name: item.name || "No Name Provided", durability: item.durability || 100, enhancement: !item.enhancement ? 1 : item.enhancement === 20 ? item.enhancement : item.enhancement + 1 };
+  const temp = fillInEmptyProps(item);
+  return { ...temp, enhancement: item.enhancement === 20 ? item.enhancement : item.enhancement + 1 };
 }
 
 function fail(item) {
-  return { ...item };
+  const temp = fillInEmptyProps(item);
+  return { ...temp, durability: temp.durability - 5, enhancement: temp.enhancement };
 }
 
 function repair(item) {
-  return { name: item.name || "No Name Provided", enhancement: item.enhancement || 0, durability: 100 };
+  const temp = fillInEmptyProps(item);
+  return { ...temp, durability: 100 };
 }
 
 function get(item) {

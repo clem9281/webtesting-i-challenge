@@ -47,11 +47,16 @@ const stdObjEnh20 = {
     durability: 25,
     enhancement: 20
 }
+const stdObjEnhLess15 = {
+    name: "Object1",
+    durability: 25,
+    enhancement: 14
+}
 const objNoEnh = {
     name: "Object1", durability: 25
 }
 const objNoDur = {
-    name: "Object1", enhancement: 19
+    name: "Object1", enhancement: 14
 }
 const empty = {};
 const defaultName = "No Name Provided";
@@ -110,4 +115,39 @@ describe('success', () => {
             enhancement: 20
         })
     })
+})
+
+describe('fail', () => {
+    checkProperties(enhancer.fail, empty, stdObj);
+    // handle when the enhancement is less than 15
+    it('should return the durability decreased by 5 if the enhancement is less than 15', () => {
+        expect(enhancer.fail(stdObjEnhLess15)).toEqual({
+            name: stdObjEnhLess15.name,
+            durability: 20,
+            enhancement: stdObjEnhLess15.enhancement
+        })
+        // if no enhancement is provided, set to 0 and handle durability accordingly
+        expect(enhancer.fail(objNoEnh)).toEqual({
+            name: objNoEnh.name,
+            durability: 20,
+            enhancement: 0
+        })
+        // if no durability is provided, set to 100 and handle  accordingly
+        expect(enhancer.fail(objNoDur)).toEqual({
+            name: objNoDur.name,
+            durability: 95,
+            enhancement: objNoDur.enhancement
+        })
+        // if the provided object is empty make sure enhancement is getting set to 0 and durability is still getting decreased
+        expect(enhancer.fail(empty)).toEqual({
+            name: defaultName,
+            durability: 95,
+            enhancement: 0
+        })
+    })
+    // handle when enhancement is greater than 15
+    it("should decrease durability by 10 if the item's enhancement is greater than 15", () => {
+
+    })
+
 })
