@@ -21,7 +21,9 @@ function succeed(item) {
 
 function fail(item) {
   const temp = fillInEmptyProps(item);
-  return { ...temp, durability: temp.durability - 5, enhancement: temp.enhancement };
+  if (temp.enhancement < 15) {
+    return { ...temp, durability: temp.durability - 5, enhancement: temp.enhancement };
+  }
 }
 
 function repair(item) {
