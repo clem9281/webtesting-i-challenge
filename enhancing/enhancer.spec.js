@@ -1,31 +1,19 @@
 const enhancer = require('./enhancer.js');
 // test away!
 
-test.todo("tests for repair");
 test.todo("tests for success");
 test.todo('tests for failure');
 
+// reuse these tests across all three functions
+const checkProperties = (func, empty, stdObj) => {
 
-describe('repair', () => {
-    // test objects and default values
-    const stdObj = { name: 'Object1', durability: 25, enhancement: 19 };
-    const objNoName = {
-        durability: 25, enhancement: 19
-    }
-    const objNoEnh = {
-        name: "Object1", durability: 25
-    }
-    const empty = {};
-    const defaultName = "No Name Provided";
-    const defaultEnh = 0;
-
-    // check that it has the right properties
+    // make sure the returned object has the right properties
     it('should return an object that has name (any string), durability and enhancement properties', () => {
-        expect(enhancer.repair(empty)).toHaveProperty('durability');
+        expect(func(empty)).toHaveProperty('durability');
 
-        expect(enhancer.repair(empty)).toHaveProperty('name', expect.any(String));
+        expect(func(empty)).toHaveProperty('name', expect.any(String));
 
-        expect(enhancer.repair(empty)).toHaveProperty('enhancement');
+        expect(func(empty)).toHaveProperty('enhancement');
     })
 
     // make sure those properties are in the right range
@@ -48,28 +36,78 @@ describe('repair', () => {
 
         expect(enhancer.repair(stdObj).enhancement).toBeLessThanOrEqual(20);
     })
+}
+// test objects and default values
+const stdObj = { name: 'Object1', durability: 25, enhancement: 19 };
+const objNoName = {
+    durability: 25, enhancement: 19
+}
+const stdObjEnh20 = {
+    name: "Object1",
+    durability: 25,
+    enhancement: 20
+}
+const objNoEnh = {
+    name: "Object1", durability: 25
+}
+const objNoDur = {
+    name: "Object1", enhancement: 19
+}
+const empty = {};
+const defaultName = "No Name Provided";
+const defaultEnh = 0;
+const defaultDur = 100;
 
+describe('repair', () => {
+    checkProperties(enhancer.repair, empty, stdObj);
     // make sure durability is getting set to 100
     it("should return an object with it's durability set to 100", () => {
 
         expect(enhancer.repair(stdObj)).toEqual({ name: stdObj.name, durability: 100, enhancement: stdObj.enhancement });
 
-        expect(enhancer.repair(objNoName)).toEqual({
-            name: defaultName,
+        // even if we aren't provided with a durability, it should get set to 100
+        expect(enhancer.repair(objNoDur)).toEqual({
+            name: objNoDur.name,
             durability: 100,
-            enhancement: objNoName.enhancement
+            enhancement: objNoDur.enhancement
         })
-
-        expect(enhancer.repair(objNoEnh)).toEqual({
-            name: objNoEnh.name,
-            durability: 100,
-            enhancement: defaultEnh
-        })
-
+        // if the provided object is empty, still set durability to 100
         expect(enhancer.repair(empty)).toEqual({
             name: defaultName,
             durability: 100,
             enhancement: defaultEnh
+        })
+    })
+})
+
+describe('success', () => {
+    checkProperties(enhancer.succeed, empty, stdObj);
+    // make sure the enhancement gets increased by one when it is less than 20 
+    it('should return the enhancement increased by one if the enhancement was less than 20', () => {
+        expect(enhancer.succeed(stdObj)).toEqual({
+            name: stdObj.name,
+            durability: stdObj.durability,
+            enhancement: 20
+        })
+        // if no enhancement is provided, make sure it is getting set to 1
+        expect(enhancer.succeed(objNoEnh)).toEqual({
+            name: objNoEnh.name,
+            durability: objNoEnh.durability,
+            enhancement: 1
+        })
+        // if the provided object is empty make sure enhancement is getting set to 1
+        expect(enhancer.succeed(empty)).toEqual({
+            name: defaultName,
+            durability: defaultDur,
+            enhancement: 1
+        })
+    })
+    // if the enhancement is already 20, make sure it doesn't change
+    it('should not change the enhancement if the enhancement is equal to 20', () => {
+        expect(enhancer.succeed(stdObjEnh20)).toEqual({
+            name: stdObjEnh20.name,
+            durability: stdObj.durability,
+            enhancement: 20
         })
     })
 })
