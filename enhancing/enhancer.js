@@ -14,7 +14,7 @@ function fail(item) {
 }
 
 function repair(item) {
-  return { ...item };
+  return { name: item.name || "No Name Provided", enhancement: item.enhancement || 0, durability: 100 };
 }
 
 function get(item) {
