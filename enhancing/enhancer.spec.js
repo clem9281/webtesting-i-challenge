@@ -19,33 +19,35 @@ const checkProperties = (func, empty, stdObj) => {
     // make sure those properties are in the right range
     it('should return an object whose durbaility is between 0 and 100, and whose enhancement is between 0 and 20', () => {
         // durability
-        expect(enhancer.repair(empty).durability).toBeGreaterThanOrEqual(0);
+        expect(func(empty).durability).toBeGreaterThanOrEqual(0);
 
-        expect(enhancer.repair(empty).durability).toBeLessThanOrEqual(100);
+        expect(func(empty).durability).toBeLessThanOrEqual(100);
 
-        expect(enhancer.repair(stdObj).durability).toBeGreaterThanOrEqual(0);
+        expect(func(stdObj).durability).toBeGreaterThanOrEqual(0);
 
-        expect(enhancer.repair(stdObj).durability).toBeLessThanOrEqual(100);
+        expect(func(stdObj).durability).toBeLessThanOrEqual(100);
 
         // enhancement
-        expect(enhancer.repair(empty).enhancement).toBeGreaterThanOrEqual(0);
+        expect(func(empty).enhancement).toBeGreaterThanOrEqual(0);
 
-        expect(enhancer.repair(empty).enhancement).toBeLessThanOrEqual(20);
+        expect(func(empty).enhancement).toBeLessThanOrEqual(20);
 
-        expect(enhancer.repair(stdObj).enhancement).toBeGreaterThanOrEqual(0);
+        expect(func(stdObj).enhancement).toBeGreaterThanOrEqual(0);
 
-        expect(enhancer.repair(stdObj).enhancement).toBeLessThanOrEqual(20);
+        expect(func(stdObj).enhancement).toBeLessThanOrEqual(20);
     })
 }
 // test objects and default values
 const stdObj = { name: 'Object1', durability: 25, enhancement: 19 };
-const objNoName = {
-    durability: 25, enhancement: 19
-}
 const stdObjEnh20 = {
     name: "Object1",
     durability: 25,
     enhancement: 20
+}
+const stdObjEnh15 = {
+    name: "Object1",
+    durability: 25,
+    enhancement: 15
 }
 const stdObjEnhLess15 = {
     name: "Object1",
@@ -57,6 +59,12 @@ const objNoEnh = {
 }
 const objNoDur = {
     name: "Object1", enhancement: 14
+}
+const objNoDurEnh15 = {
+    name: "Object1", enhancement: 15
+}
+const objNoDurEnh16 = {
+    name: "Object1", enhancement: 16
 }
 const empty = {};
 const defaultName = "No Name Provided";
@@ -147,7 +155,32 @@ describe('fail', () => {
     })
     // handle when enhancement is greater than 15
     it("should decrease durability by 10 if the item's enhancement is greater than 15", () => {
+        expect(enhancer.fail(stdObjEnh15)).toEqual({
+            name: stdObjEnh15.name,
+            durability: 15,
+            enhancement: stdObjEnh15.enhancement
+        })
+        // if no durability is provided, set to 100 and handle  accordingly
+        expect(enhancer.fail(objNoDurEnh15)).toEqual({
+            name: objNoDurEnh15.name,
+            durability: 90,
+            enhancement: objNoDurEnh15.enhancement
+        })
+    })
 
+    // handle when enhancement is greater than 16
+    it("should decrease durability by 10 if the item's enhancement is greater than 15", () => {
+        expect(enhancer.fail(stdObj)).toEqual({
+            name: stdObj.name,
+            durability: 15,
+            enhancement: 18
+        })
+        // if no durability is provided, set to 100 and handle  accordingly
+        expect(enhancer.fail(objNoDurEnh16)).toEqual({
+            name: objNoDurEnh16.name,
+            durability: 90,
+            enhancement: 15
+        })
     })
 
 })

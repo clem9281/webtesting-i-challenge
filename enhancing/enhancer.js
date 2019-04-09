@@ -22,7 +22,15 @@ function succeed(item) {
 function fail(item) {
   const temp = fillInEmptyProps(item);
   if (temp.enhancement < 15) {
-    return { ...temp, durability: temp.durability - 5, enhancement: temp.enhancement };
+    return { ...temp, durability: temp.durability - 5 };
+  }
+  else if (temp.enhancement >= 15) {
+    if (temp.enhancement >= 16) {
+      return { ...temp, durability: temp.durability - 10, enhancement: temp.enhancement - 1 }
+    } else {
+      return { ...temp, durability: temp.durability - 10 }
+    }
+
   }
 }
 
